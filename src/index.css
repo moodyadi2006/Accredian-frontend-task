@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Connecting line between referrer and referee */
+/* Continuous vertical connecting line */
+.vertical-line {
+  position: relative;
+}
+
+.vertical-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 0.5px;
+  background: black;
+  transform: translateY(-70%);
+}
