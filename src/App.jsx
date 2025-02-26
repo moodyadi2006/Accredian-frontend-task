@@ -25,6 +25,8 @@ function App() {
   const [refereeEmail, setRefereeEmail] = useState("");
   const [courseName, setCourseName] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleScroll = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -44,10 +46,21 @@ function App() {
     setRefereeName("");
     setCourseName("");
     setMessage("");
+    setLoading(false);
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(referrerEmail)) {
+      toast.error("Invalid referrer email format");
+      return;
+    }
+    if (!emailRegex.test(refereeEmail)) {
+      toast.error("Invalid referee email format");
+      return;
+    }
+    setLoading(true);
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/api/refer`,
       {
@@ -74,7 +87,12 @@ function App() {
       toast.error("Some error occured while referring");
     } else if (response.data.status == 500) {
       toast.error("Internal Server Error...");
+    } else if (response.data.status == 402) {
+      toast.error("Incorrect Referrer Email");
+    } else if (response.data.status == 403) {
+      toast.error("Incorrect Referee Email");
     }
+    setLoading(false);
   };
 
   return (
@@ -804,6 +822,7 @@ function App() {
               >
                 ✕
               </button>
+
               <form onSubmit={submitHandler}>
                 <div className="grid grid-cols-2 gap-3">
                   {/* Left Column - Referrer */}
@@ -962,8 +981,35 @@ function App() {
                   <button
                     type="submit"
                     className="w-full px-3 py-2 bg-blue-500 cursor-pointer text-white font-medium rounded-md hover:bg-blue-600 transition duration-300 flex items-center justify-center text-sm"
+                    disabled={loading}
                   >
-                    <span>Send Referral</span>
+                    {loading ? (
+                      <>
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 0116 0h-2a6 6 0 00-12 0H4z"
+                          ></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      <span>Send Referral</span>
+                    )}
                   </button>
                 </div>
               </form>
