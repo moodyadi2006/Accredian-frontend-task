@@ -48,7 +48,7 @@ npm run dev
 
 ## Design Considerations
 
-- **UI Libraries**: Material-UI or Tailwind CSS for a sleek, modern design.
+- **UI Libraries**: Tailwind CSS for a sleek, modern design.
 - **Validation**: Real-time feedback for missing or incorrect inputs.
 
 ## Contributing
